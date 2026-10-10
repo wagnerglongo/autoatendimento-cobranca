@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  testes:
+    name: Testes PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ["8.2", "8.3", "8.4"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, openssl, curl, mbstring
+          coverage: none
+      - run: composer install --no-interaction --no-progress
+      - run: vendor/bin/phpunit
+
+  docker:
+    name: Docker Compose de ponta a ponta
+    runs-on: ubuntu-latest
+    env:
+      APP_SEGREDO: segredo-do-ci-com-mais-de-trinta-e-dois-caracteres
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose up -d --build --wait
+      - name: Página inicial responde com cabeçalhos de segurança
+        run: |
+          curl -fsS -D cabecalhos.txt -o pagina.html http://localhost:8080/
+          grep -q 'name="cpf"' pagina.html
+          grep -qi "content-security-policy" cabecalhos.txt
+      - name: CPF com dívida chega à escolha de telefone (portal falando com o simulador)
+        run: |
+          curl -fsS -c sessao.txt -o inicio.html http://localhost:8080/
+          token=$(grep -o 'name="_csrf" value="[a-f0-9]*"' inicio.html | head -1 | sed 's/.*value="//;s/"//')
+          curl -fsS -b sessao.txt -c sessao.txt -o /dev/null -w '%{redirect_url}\n' \
+            --data-urlencode "_csrf=$token" --data-urlencode "cpf=111.444.777-35" http://localhost:8080/entrar | grep -q '/telefone'
+          curl -fsS -b sessao.txt http://localhost:8080/telefone | grep -q 'Enviar código por SMS'
+      - if: failure()
+        run: docker compose logs

@@ -29,7 +29,7 @@ code{background:var(--fundo);padding:.1em .35em;border-radius:4px}
 
 /* topo e rodapé */
 .topo{background:var(--cartao);border-bottom:1px solid var(--linha)}
-.topo-linha{max-width:52rem;margin:0 auto;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.topo-linha{max-width:60rem;margin:0 auto;padding:.75rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .marca{display:flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--tinta);font-weight:700}
 .sair button{font:inherit;font-weight:700;background:none;border:1px solid var(--linha);border-radius:999px;padding:.4rem 1rem;color:var(--tinta);cursor:pointer;min-height:2.5rem}
 .faixa-demo{margin:0;background:var(--ambar-claro);color:var(--ambar);text-align:center;font-size:.9375rem;padding:.5rem 1rem;border-bottom:1px solid #f1dcb4}
@@ -104,7 +104,7 @@ legend{font-weight:700;font-size:1.125rem;margin-bottom:.75rem}
 .contrato.em-acordo{border-left-color:var(--primaria)}
 .contrato-dados{display:grid;grid-template-columns:1fr auto;column-gap:1rem;row-gap:.15rem}
 .contrato .produto{font-weight:700;font-size:1.125rem}
-.contrato .valor{font-weight:700;font-size:1.125rem;text-align:right;font-variant-numeric:tabular-nums}
+.contrato .valor{font-weight:700;font-size:1.125rem;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .contrato .numero,.contrato .situacao{color:var(--suave);font-size:.9375rem}
 .contrato .situacao{text-align:right}
 @media (min-width:40rem){.contrato{grid-template-columns:1fr 13rem;align-items:center}}

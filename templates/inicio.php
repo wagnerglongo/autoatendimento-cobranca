@@ -13,8 +13,8 @@
     <li class="contrato<?= $c['em_acordo'] ? ' em-acordo' : '' ?>">
       <div class="contrato-dados">
         <span class="produto"><?= e($c['produto']) ?></span>
-        <span class="numero">Contrato <?= e($c['contrato']) ?></span>
         <span class="valor"><?= moeda($c['valor']) ?></span>
+        <span class="numero">Contrato <?= e($c['contrato']) ?></span>
         <span class="situacao"><?= $c['em_acordo'] ? 'Em acordo' : 'Em aberto desde ' . e(data_br($c['desde'])) ?></span>
       </div>
       <a class="botao<?= $c['em_acordo'] ? ' botao-secundario' : '' ?>" href="/contratos/<?= e(rawurlencode($c['contrato'])) ?>">

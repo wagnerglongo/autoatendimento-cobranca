@@ -1,0 +1,46 @@
+services:
+  portal:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      APP_NOME: "${APP_NOME:-Portal de Negociação}"
+      APP_EMPRESA: "${APP_EMPRESA:-ACME Financeira}"
+      APP_URL: "${APP_URL:-http://localhost:8080}"
+      APP_SEGREDO: "${APP_SEGREDO:?defina APP_SEGREDO no .env (openssl rand -hex 32)}"
+      MODO_DEMO: "${MODO_DEMO:-1}"
+      DB_DSN: "sqlite:/var/www/portal/storage/portal.sqlite"
+      CREDOR_URL: http://credor:8080
+      CREDOR_USUARIO: "${CREDOR_USUARIO:-demo}"
+      CREDOR_SENHA: "${CREDOR_SENHA:-demo}"
+      SMS_DRIVER: "${SMS_DRIVER:-log}"
+      SMS_WEBHOOK_URL: "${SMS_WEBHOOK_URL:-}"
+      SMS_WEBHOOK_TOKEN: "${SMS_WEBHOOK_TOKEN:-}"
+      PAINEL_SENHA_HASH: "${PAINEL_SENHA_HASH:-}"
+    volumes:
+      - portal_dados:/var/www/portal/storage
+    depends_on:
+      credor:
+        condition: service_healthy
+
+  # Simulador da API do credor ACME (fictício). Em produção, CREDOR_URL aponta para o credor real.
+  credor:
+    image: php:8.3-cli-alpine
+    working_dir: /simulador
+    command: ["php", "-S", "0.0.0.0:8080", "-t", "public", "public/index.php"]
+    environment:
+      SIMULADOR_USUARIO: "${CREDOR_USUARIO:-demo}"
+      SIMULADOR_SENHA: "${CREDOR_SENHA:-demo}"
+      SIMULADOR_ESTADO: /data/estado.json
+    volumes:
+      - ./simulador:/simulador:ro
+      - credor_dados:/data
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1:8080/health\") ? 0 : 1);'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  portal_dados:
+  credor_dados:
