@@ -1,0 +1,34 @@
+{
+    "name": "wagnerglongo/autoatendimento-cobranca",
+    "description": "Portal de autoatendimento para negociação de dívidas: CPF, código por SMS, propostas, acordo e boleto, integrado à API do credor.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-openssl": "*",
+        "ext-curl": "*",
+        "ext-mbstring": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5 || ^11.0"
+    },
+    "autoload": {
+        "psr-4": { "Autoatendimento\\": "src/" },
+        "files": ["src/helpers.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Autoatendimento\\Tests\\": "tests/",
+            "CredorSimulado\\": "simulador/src/"
+        }
+    },
+    "scripts": {
+        "simulador": "php -S localhost:8090 -t simulador/public simulador/public/index.php",
+        "serve": "php -S localhost:8000 -t public public/index.php",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

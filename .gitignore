@@ -1,0 +1,7 @@
+/vendor/
+/storage/*
+!/storage/.gitkeep
+.env
+.phpunit.result.cache
+.phpunit.cache/
+/docs/capturas/*.tmp.png
